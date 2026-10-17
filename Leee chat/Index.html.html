@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080c10">
+<link rel="manifest" href="manifest.webmanifest">
+<title>NEXUS CHAT</title>
+<style>
+:root{--bg:#080c10;--panel:#0e1419;--card:#131920;--line:#24313b;--cyan:#00d4ff;--blue:#2585ff;--text:#eaf4fa;--muted:#91a3b1;--green:#00e5a0;--danger:#ff647c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;background:var(--cyan);color:#041116;font-weight:750}button.secondary{background:#1a2630;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:not-allowed}
+.top{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#0b1116;position:sticky;top:0;z-index:2;gap:12px}.brand{font-weight:900;letter-spacing:2px;font-size:20px}.brand span{color:var(--cyan)}.status{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.topright{display:flex;align-items:center;gap:12px;min-width:0}.wrap{max-width:1200px;margin:24px auto;padding:0 16px}.auth{max-width:460px;margin:7vh auto;background:var(--panel);border:1px solid var(--line);padding:28px;border-radius:20px;box-shadow:0 20px 70px #0008}.auth h1{margin:0 0 6px}.muted{color:var(--muted)}.field{display:flex;flex-direction:column;gap:6px;margin:13px 0}.field label{font-size:13px;color:#b8c8d3}.field input,.search{width:100%;padding:12px 13px;background:#080e13;border:1px solid var(--line);border-radius:10px;color:var(--text);outline:none}.field input:focus,.search:focus{border-color:var(--cyan)}.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}.wide{width:100%;margin-top:8px}.error{color:#ff8293;font-size:13px;min-height:20px;margin-top:8px}.info{color:var(--green)}.switch{text-align:center;margin-top:17px;font-size:13px}.link{background:none;color:var(--cyan);padding:0}.app{display:grid;grid-template-columns:310px 1fr;min-height:72vh;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}.side{border-right:1px solid var(--line);min-width:0}.sidehead{padding:20px;border-bottom:1px solid var(--line)}.sidehead h2{margin:0 0 12px}.contact-list{max-height:62vh;overflow:auto}.contact{display:flex;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid #1c2730;cursor:pointer}.contact:hover,.contact.active{background:#14232c}.avatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#00d4ff,#2585ff);color:#041116;font-weight:900}.contact-name{font-weight:700}.contact-sub{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat{display:flex;flex-direction:column;min-width:0;min-height:65vh}.chathead{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}.chathead h3{margin:0}.messages{flex:1;padding:22px;overflow:auto;display:flex;flex-direction:column;gap:12px;min-height:360px;max-height:60vh}.empty{margin:auto;text-align:center;color:var(--muted);max-width:320px}.bubble{max-width:min(75%,520px);padding:11px 14px;border-radius:15px;background:#1a2630;border:1px solid #2a3944;overflow-wrap:anywhere}.bubble.mine{align-self:flex-end;background:#073746;border-color:#07566b}.meta{font-size:10px;color:#a9bbc7;margin-top:5px}.composer{display:flex;gap:10px;padding:15px;border-top:1px solid var(--line)}.composer input{flex:1;min-width:0;padding:13px;background:#080e13;border:1px solid var(--line);border-radius:12px;color:var(--text)}.note{font-size:12px;color:var(--muted);margin:14px 2px}.hide{display:none!important}.badge{font-size:11px;color:var(--green)}@media(max-width:760px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line)}.contact-list{max-height:190px}.messages{min-height:300px}.top{padding:0 15px}.wrap{margin:12px auto}.auth{margin:4vh 12px;padding:22px}}
+
+.navtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.navtabs button{flex:1}.toolrow{display:flex;gap:7px;flex-wrap:wrap;padding:10px 14px 0}.toolrow button{padding:8px 10px;font-size:13px}.fileinput{display:none}.profilebar{display:flex;gap:10px;align-items:center;margin-top:12px}.profilebar img{width:46px;height:46px;object-fit:cover;border-radius:50%;border:1px solid var(--line)}.mediaimg,.mediavid{max-width:min(100%,360px);max-height:300px;border-radius:12px;display:block}.stickertray{display:flex;gap:8px;flex-wrap:wrap;padding:10px}.sticker{font-size:26px;background:#17232c;color:white;padding:6px 9px}.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:16px}.postcard{background:#111a21;border:1px solid var(--line);border-radius:14px;overflow:hidden}.postcard video{width:100%;max-height:380px;background:#000}.postcard .caption{padding:10px}.small{font-size:12px;color:var(--muted)}.callbox{position:fixed;inset:auto 16px 16px auto;width:min(420px,calc(100% - 32px));background:#0e1419;border:1px solid var(--cyan);border-radius:16px;padding:14px;z-index:9;box-shadow:0 12px 50px #000b}.callbox video{width:100%;max-height:240px;background:#000;border-radius:10px}.callactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.tick{color:#8ce8ff}.presence{display:inline-block;width:8px;height:8px;border-radius:50%;background:#63717b;margin-right:5px}.presence.on{background:var(--green)}
+@media(max-width:760px){.feed{grid-template-columns:repeat(2,minmax(0,1fr))}.toolrow button{flex:1}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">NEXUS <span>CHAT</span></div>
+  <div class="topright">
+    <div class="status" id="topStatus">Secure messaging workspace</div>
+    <button id="logoutBtn" class="secondary hide" type="button">Sign out</button>
+  </div>
+</header>
+<main class="wrap">
+<section id="authView" class="auth">
+<h1 id="authTitle">Welcome to NEXUS CHAT</h1><p class="muted" id="authSubtitle">Sign in to continue to your messages.</p>
+<form id="authForm">
+<div id="nameFields" class="hide">
+<div class="row"><div class="field"><label for="firstName">First name</label><input id="firstName" autocomplete="given-name"></div><div class="field"><label for="lastName">Last name</label><input id="lastName" autocomplete="family-name"></div></div>
+<div class="row"><div class="field"><label for="country">Country</label><input id="country" placeholder="e.g. Rwanda"></div><div class="field"><label for="phone">International phone</label><input id="phone" placeholder="+250..." autocomplete="tel"></div></div>
+</div>
+<div class="field"><label for="email">Email address</label><input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></div>
+<div class="field"><label for="password">Password</label><input id="password" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters"></div>
+<button id="authButton" class="wide" type="submit">Sign in</button><div id="authError" class="error" role="alert"></div>
+</form>
+<div class="switch"><span id="switchText">New here?</span> <button class="link" id="switchMode" type="button">Create an account</button><br><button class="link" id="forgotPassword" type="button" style="margin-top:12px">Forgot password?</button></div>
+<p class="note">Powered by Supabase. Passwords are managed securely by Supabase Auth. Never share your password.</p>
+</section>
+<section id="appView" class="hide">
+<div class="profilebar"><img id="myAvatar" alt="Your profile photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46'%3E%3Crect width='100%25' height='100%25' fill='%230d3340'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='22' fill='%2300d4ff'%3E+%3C/text%3E%3C/svg%3E"><div style="flex:1"><b id="myName">My profile</b><div class="small">Profile photo • short videos • messages</div></div><label class="secondary" style="padding:9px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer">Edit photo<input id="profileFile" class="fileinput" type="file" accept="image/*"></label><button id="enableNotifications" type="button" class="secondary">🔔 Enable notifications</button></div>
+<div class="navtabs"><button id="messagesTab" type="button">💬 Messages</button><button id="videosTab" class="secondary" type="button">🎬 Short videos</button></div>
+<div id="messagesView" class="app">
+<aside class="side"><div class="sidehead"><h2>Messages</h2><input id="userSearch" class="search" placeholder="Search people by name or email"></div><div id="contactList" class="contact-list"></div></aside>
+<section class="chat"><div class="chathead"><div class="avatar" id="chatAvatar">N</div><div><h3 id="chatName">Choose a person</h3><div class="contact-sub" id="chatSub">Select a contact to start chatting</div></div><div style="margin-left:auto" class="badge" id="chatBadge"></div></div>
+<div id="messages" class="messages"><div class="empty"><h2>Welcome 👋</h2><p>Select a person from the list to start a private conversation.</p></div></div>
+<div class="toolrow"><label class="secondary" style="border:1px solid var(--line);border-radius:10px;cursor:pointer;padding:8px 10px">📎 Attach file<input id="mediaFile" class="fileinput" type="file" accept="image/*,video/*,audio/*,application/pdf,text/plain,application/zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label><button type="button" id="stickerBtn" class="secondary">😊 Stickers</button><button type="button" id="recordBtn" class="secondary">🎙 Voice note</button><button type="button" id="callBtn" class="secondary">📹 Video call</button><button type="button" id="contactsBtn" class="secondary">📱 Contacts</button></div><div id="stickerTray" class="stickertray hide"><button type="button" class="sticker">❤️</button><button type="button" class="sticker">😂</button><button type="button" class="sticker">🥹</button><button type="button" class="sticker">🔥</button><button type="button" class="sticker">👍</button><button type="button" class="sticker">🎉</button><button type="button" class="sticker">😍</button><button type="button" class="sticker">🙏</button><button type="button" class="sticker">💯</button></div><form id="sendForm" class="composer"><input id="messageInput" maxlength="4000" placeholder="Write a message..." autocomplete="off" disabled><button id="sendButton" type="submit" disabled>Send ➤</button></form>
+</section></section>
+</div>
+<section id="videosView" class="hide" style="border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden"><div class="sidehead"><h2>🎬 NEXUS Moments</h2><p class="small">Share short vertical videos with the community. Upload only content you have permission to share.</p><form id="postForm"><input id="postVideo" type="file" accept="video/*" required><input id="postCaption" maxlength="240" placeholder="Write a caption..." style="margin:8px 0;width:100%;padding:12px;background:#080e13;border:1px solid var(--line);border-radius:10px;color:var(--text)"><button type="submit">Publish moment</button><span id="postStatus" class="small"></span></form></div><div id="videoFeed" class="feed"></div></section>
+<p class="note" id="footerNote">NEXUS CHAT • Use respectful communication. Do not share passwords or sensitive personal information.</p>
+</main>
+<div id="callBox" class="callbox hide"><b id="callTitle">Video call</b><p id="callStatus" class="small">Waiting...</p><video id="remoteVideo" autoplay playsinline></video><video id="localVideo" autoplay muted playsinline></video><div class="callactions"><button id="acceptCall" type="button" class="hide">Accept</button><button id="hangupCall" type="button" style="background:var(--danger)">End call</button></div></div>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+/*
+  SETUP:
+  1. Run NEXUS-CHAT-supabase-setup.sql in Supabase Dashboard > SQL Editor.
+  2. Dashboard > Project Settings > API: copy the "anon" / "publishable" key below.
+     NEVER put a secret / service_role key in this file: anyone can read it.
+  3. Set TURN credentials below for reliable calls across mobile networks.
+  4. Serve this app over HTTPS (or localhost) for camera, microphone and PWA features.
+  5. Passwords are handled by Supabase Auth; this app never stores readable passwords.
+*/
+const SUPABASE_URL = ""; // e.g. https://YOUR_PROJECT.supabase.co
+const SUPABASE_ANON_KEY = ""; // publishable/anon key only; NEVER service_role
+const VAPID_PUBLIC_KEY = "YOUR_VAPID_PUBLIC_KEY"; // Generate VAPID keys and set the public key here.
+const TURN_CONFIG = {
+  urls: "turn:YOUR_TURN_SERVER:3478",
+  username: "YOUR_TURN_USERNAME",
+  credential: "YOUR_TURN_CREDENTIAL"
+};
+const ICE_CONFIG = [
+  { urls: "stun:stun.l.google.com:19302" },
+  ...(TURN_CONFIG.username && !TURN_CONFIG.username.startsWith("YOUR_") && TURN_CONFIG.credential && !TURN_CONFIG.credential.startsWith("YOUR_") && TURN_CONFIG.urls && !TURN_CONFIG.urls.includes("YOUR_TURN_SERVER") ? [{ urls: TURN_CONFIG.urls, username: TURN_CONFIG.username, credential: TURN_CONFIG.credential }] : [])
+];
+
+const configured = SUPABASE_URL.startsWith("https://") && SUPABASE_ANON_KEY.length > 20;
+const supabase = configured ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(base64); return Uint8Array.from([...raw].map(ch => ch.charCodeAt(0)));
+}
+async function enablePushNotifications() {
+  if (!currentUser) return alert("Sign in first.");
+  if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return alert("Push notifications are not supported by this browser. Try installing the app in a supported browser.");
+  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith("YOUR_")) return alert("First configure VAPID_PUBLIC_KEY in the HTML and deploy the send-push Edge Function with the matching private key.");
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return alert("Notifications were not allowed in browser settings.");
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
+    const { error } = await supabase.from("push_subscriptions").upsert({ user_id: currentUser.id, endpoint: subscription.endpoint, subscription: subscription.toJSON() }, { onConflict: "user_id,endpoint" });
+    if (error) throw error;
+    alert("Push notifications enabled on this device.");
+  } catch (e) { console.error(e); alert("Could not enable notifications: " + friendlyError(e)); }
+}
+
+const $ = id => document.getElementById(id);
+let createMode = false, currentUser = null, selected = null;
+let users = [], msgs = [], profilesChannel = null, messagesChannel = null, presenceChannel = null, onlineIds = new Set(), recorder = null, recordChunks = [], localStream = null, peer = null, activeCallChannel = null, callChannelUserId = null, callChannelReady = null, incomingOffer = null, queuedCandidates = [];
+const authView = $("authView"), appView = $("appView");
+
+function showError(message, ok = false) {
+  const el = $("authError");
+  el.textContent = message || "";
+  el.classList.toggle("info", ok);
+}
+function initials(p) { return ((p?.first_name || p?.email || "N").trim()[0] || "N").toUpperCase(); }
+function fullName(p) { return [p?.first_name, p?.last_name].filter(Boolean).join(" ") || p?.email || "User"; }
+function conversationId(a, b) { return [a, b].sort().join("_"); }
+function dateLabel(ts) { try { return new Date(ts || Date.now()).toLocaleString(); } catch { return ""; } }
+function friendlyError(err) {
+  const m = (err?.message || "").toLowerCase();
+  if (m.includes("already registered")) return "This email already has an account. Sign in instead.";
+  if (m.includes("invalid login")) return "Email or password is incorrect.";
+  if (m.includes("email not confirmed")) return "Please confirm your email first (check your inbox).";
+  if (m.includes("password")) return "Choose a password with at least 6 characters.";
+  if (m.includes("row-level security") || err?.code === "42501") return "Supabase security rules blocked this action. Re-run supabase-setup.sql.";
+  return err?.message || "Something went wrong.";
+}
+
+function setMode(value) {
+  createMode = value;
+  $("nameFields").classList.toggle("hide", !value);
+  $("authTitle").textContent = value ? "Create your account" : "Welcome to NEXUS CHAT";
+  $("authSubtitle").textContent = value ? "Create an account to find people and chat in real time." : "Sign in to continue to your messages.";
+  $("authButton").textContent = value ? "Create account" : "Sign in";
+  $("switchText").textContent = value ? "Already have an account?" : "New here?";
+  $("switchMode").textContent = value ? "Sign in" : "Create an account";
+  $("password").autocomplete = value ? "new-password" : "current-password";
+  showError("");
+}
+$("switchMode").addEventListener("click", () => setMode(!createMode));
+$("forgotPassword").addEventListener("click", async () => {
+  if (!configured) return showError("Add your Supabase Project URL and publishable/anon key first.");
+  const email = $("email").value.trim();
+  if (!email) return showError("Enter your account email above, then choose Forgot password.");
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+    if (error) throw error;
+    showError("If the account exists, Supabase will send a password reset email. Check your inbox.", true);
+  } catch (error) { showError(friendlyError(error)); }
+});
+
+$("authForm").addEventListener("submit", async e => {
+  e.preventDefault(); showError("");
+  if (!configured) { showError("Supabase is not configured yet. Add your Project URL and publishable/anon key in this file."); return; }
+  const email = $("email").value.trim(), password = $("password").value;
+  $("authButton").disabled = true;
+  try {
+    if (createMode) {
+      const first_name = $("firstName").value.trim(), last_name = $("lastName").value.trim(),
+            country = $("country").value.trim(), phone = $("phone").value.trim();
+      if (!first_name || !last_name || !country || !phone) { showError("Please complete first name, last name, country, and international phone."); return; }
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { first_name, last_name, country, phone } }
+      });
+      if (error) throw error;
+      if (!data.session) showError("Account created! Check your email to confirm it, then sign in.", true);
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    }
+  } catch (err) { showError(friendlyError(err)); }
+  finally { $("authButton").disabled = false; }
+});
+
+function renderContacts() {
+  const term = $("userSearch").value.toLowerCase();
+  const list = $("contactList"); list.innerHTML = "";
+  const filtered = users.filter(u => u.id !== currentUser.id && `${fullName(u)} ${u.email} ${u.country || ""}`.toLowerCase().includes(term));
+  if (!filtered.length) { list.innerHTML = '<div class="note" style="padding:10px 18px">No other users found yet. Ask a friend to create an account.</div>'; return; }
+  for (const u of filtered) {
+    const item = document.createElement("div");
+    item.className = "contact" + (selected?.id === u.id ? " active" : "");
+    const av = u.avatar_url ? document.createElement("img") : document.createElement("div"); av.className = "avatar"; if (u.avatar_url) { av.src = u.avatar_url; av.alt = fullName(u); av.style.objectFit = "cover"; } else av.textContent = initials(u);
+    const body = document.createElement("div"); body.style.minWidth = "0";
+    const name = document.createElement("div"); name.className = "contact-name"; name.textContent = fullName(u);
+    const sub = document.createElement("div"); sub.className = "contact-sub"; sub.innerHTML = `<span class="presence ${onlineIds.has(u.id) ? "on" : ""}"></span>${onlineIds.has(u.id) ? "Online" : "Offline"} · ${u.email || "NEXUS member"}`;
+    body.append(name, sub); item.append(av, body);
+    item.addEventListener("click", () => chooseContact(u));
+    list.append(item);
+  }
+}
+$("userSearch").addEventListener("input", renderContacts);
+
+async function resolveMediaUrl(ref) {
+  if (!ref) return "";
+  if (ref.startsWith("private:")) {
+    const path = ref.slice("private:".length);
+    const { data, error } = await supabase.storage.from("nexus-chat-media").createSignedUrl(path, 3600);
+    if (error) { console.warn("Could not sign private media URL", error); return ""; }
+    return data.signedUrl;
+  }
+  // Convert links created by the previous version of NEXUS CHAT to temporary private URLs.
+  const oldMarker = "/storage/v1/object/public/nexus-media/";
+  if (ref.includes(oldMarker)) {
+    const path = decodeURIComponent(ref.split(oldMarker).pop());
+    const { data, error } = await supabase.storage.from("nexus-media").createSignedUrl(path, 3600);
+    if (error) { console.warn("Could not sign legacy media URL", error); return ""; }
+    return data.signedUrl;
+  }
+  return ref;
+}
+async function hydrateMessage(message) {
+  return { ...message, display_url: message.media_url ? await resolveMediaUrl(message.media_url) : "" };
+}
+async function hydrateMessages(messages) {
+  return Promise.all((messages || []).map(hydrateMessage));
+}
+
+function renderMessages() {
+  const area = $("messages"); area.innerHTML = "";
+  if (!msgs.length) { area.innerHTML = '<div class="empty"><h2>Say hello 👋</h2><p>This is the start of your conversation.</p></div>'; return; }
+  for (const m of msgs) {
+    const mine = m.sender_id === currentUser.id;
+    const bubble = document.createElement("div"); bubble.className = "bubble" + (mine ? " mine" : "");
+    const text = document.createElement("div");
+    if (m.media_url && m.media_type === "image") { const im=document.createElement("img"); im.src=m.display_url || m.media_url; im.alt="Shared image"; im.className="mediaimg"; text.append(im); }
+    else if (m.media_url && m.media_type === "video") { const v=document.createElement("video"); v.src=m.display_url || m.media_url; v.controls=true; v.className="mediavid"; text.append(v); }
+    else if (m.media_url && m.media_type === "audio") { const a=document.createElement("audio"); a.src=m.display_url || m.media_url; a.controls=true; text.append(a); }
+    else if (m.media_url && m.media_type === "file") { const link=document.createElement("a"); link.href=m.display_url || m.media_url; link.target="_blank"; link.rel="noopener noreferrer"; link.textContent="📎 Download attachment"; link.style.color="var(--cyan)"; text.append(link); }
+    else text.textContent = m.text || "";
+    const meta = document.createElement("div"); meta.className = "meta";
+    meta.textContent = (mine ? "You" : fullName(selected)) + " · " + dateLabel(m.created_at) + (mine ? (m.read_at ? " · ✓✓ Read" : " · ✓ Sent") : "");
+    bubble.append(text, meta); area.append(bubble);
+  }
+  area.scrollTop = area.scrollHeight;
+}
+
+async function chooseContact(profile) {
+  selected = profile; renderContacts();
+  $("chatAvatar").textContent = initials(profile);
+  $("chatName").textContent = fullName(profile);
+  $("chatSub").textContent = [profile.country, profile.email].filter(Boolean).join(" • ");
+  $("chatBadge").textContent = onlineIds.has(profile.id) ? "● ONLINE" : "○ OFFLINE";
+  $("messageInput").disabled = false; $("sendButton").disabled = false;
+  msgs = []; $("messages").innerHTML = "";
+  if (messagesChannel) { supabase.removeChannel(messagesChannel); messagesChannel = null; }
+
+  const cid = conversationId(currentUser.id, profile.id);
+  const { data, error } = await supabase.from("messages").select("*")
+    .eq("conversation_id", cid).order("created_at", { ascending: true }).limit(300);
+  if (error) { console.error(error); $("messages").innerHTML = '<div class="empty">Could not load messages. Check that supabase-setup.sql was run.</div>'; return; }
+  if (selected?.id !== profile.id) return; // user switched contact meanwhile
+  msgs = await hydrateMessages(data); renderMessages();
+  await supabase.from("messages").update({read_at:new Date().toISOString()}).eq("conversation_id",cid).eq("recipient_id",currentUser.id).is("read_at",null);
+
+  messagesChannel = supabase.channel("chat-" + cid)
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${cid}` }, async payload => {
+      if (!msgs.some(m => m.id === payload.new.id)) {
+        const hydrated = await hydrateMessage(payload.new);
+        if (selected?.id !== profile.id) return;
+        msgs.push(hydrated); renderMessages();
+      }
+      if (payload.new.recipient_id === currentUser.id && selected?.id === profile.id) {
+        await supabase.from("messages").update({read_at:new Date().toISOString()}).eq("id",payload.new.id).eq("recipient_id",currentUser.id).is("read_at",null);
+      }
+    })
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages", filter: `conversation_id=eq.${cid}` }, payload => {
+      const i = msgs.findIndex(m => m.id === payload.new.id);
+      if (i >= 0) { msgs[i] = { ...msgs[i], ...payload.new }; renderMessages(); }
+    })
+    .subscribe();
+  ensureCallChannel(profile).catch(console.warn);
+}
+
+$("sendForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const input = $("messageInput"), text = input.value.trim();
+  if (!text || !selected) return;
+  input.disabled = true; $("sendButton").disabled = true;
+  try {
+    const cid = conversationId(currentUser.id, selected.id);
+    const { data, error } = await supabase.from("messages")
+      .insert({ conversation_id: cid, sender_id: currentUser.id, recipient_id: selected.id, text, media_type: "text" })
+      .select().single();
+    if (error) throw error;
+    if (!msgs.some(m => m.id === data.id)) { msgs.push(await hydrateMessage(data)); renderMessages(); }
+    supabase.functions.invoke("send-push", { body: { message_id: data.id } }).catch(err => console.warn("Push notification was not sent", err));
+    input.value = "";
+  } catch (err) { alert("Message not sent: " + friendlyError(err)); }
+  finally { input.disabled = false; $("sendButton").disabled = false; input.focus(); }
+});
+
+async function startApp(user) {
+  currentUser = user;
+  authView.classList.add("hide"); appView.classList.remove("hide"); $("logoutBtn").classList.remove("hide");
+  $("topStatus").textContent = "Signed in • " + user.email;
+  const meta = user.user_metadata || {}; $("myName").textContent = [meta.first_name,meta.last_name].filter(Boolean).join(" ") || user.email;
+  if (meta.avatar_url) $("myAvatar").src = meta.avatar_url;
+  await supabase.from("profiles").update({last_seen:new Date().toISOString()}).eq("id",user.id).catch(()=>{});
+  const { data, error } = await supabase.from("profiles").select("*").order("created_at", { ascending: true });
+  if (error) console.error(error); else { users = data || []; const me = users.find(p => p.id === user.id); if (me) { $("myName").textContent = fullName(me); if (me.avatar_url) $("myAvatar").src = me.avatar_url; } }
+  renderContacts();
+  if (profilesChannel) supabase.removeChannel(profilesChannel);
+  profilesChannel = supabase.channel("profiles-feed")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "profiles" }, payload => {
+      if (!users.some(u => u.id === payload.new.id)) { users.push(payload.new); renderContacts(); }
+    })
+    .subscribe();
+  if (presenceChannel) supabase.removeChannel(presenceChannel);
+  presenceChannel = supabase.channel("presence-global", {config:{presence:{key:user.id}}});
+  presenceChannel.on("presence", {event:"sync"}, () => { const state=presenceChannel.presenceState(); onlineIds=new Set(Object.keys(state)); renderContacts(); if(selected) $("chatBadge").textContent=onlineIds.has(selected.id)?"● ONLINE":"○ OFFLINE"; });
+  presenceChannel.subscribe(async status => { if(status === "SUBSCRIBED") await presenceChannel.track({user_id:user.id,online:true,at:new Date().toISOString()}); });
+  await loadFeed();
+}
+
+function stopApp() {
+  endCall(false, false).catch(()=>{});
+  currentUser = null; selected = null; users = []; msgs = [];
+  if (profilesChannel) { supabase.removeChannel(profilesChannel); profilesChannel = null; }
+  if (messagesChannel) { supabase.removeChannel(messagesChannel); messagesChannel = null; }
+  if (presenceChannel) { supabase.removeChannel(presenceChannel); presenceChannel=null; }
+  authView.classList.remove("hide"); appView.classList.add("hide"); $("logoutBtn").classList.add("hide");
+  $("topStatus").textContent = "Secure messaging workspace";
+  $("chatName").textContent = "Choose a person"; $("chatSub").textContent = "Select a contact to start chatting";
+  $("chatBadge").textContent = ""; $("messageInput").disabled = true; $("sendButton").disabled = true;
+  $("messages").innerHTML = '<div class="empty"><h2>Welcome 👋</h2><p>Select a person from the list to start a private conversation.</p></div>';
+}
+
+
+async function uploadFile(file, folder="chat") {
+  if (!currentUser) throw new Error("Please sign in first.");
+  if (file.size > 50 * 1024 * 1024) throw new Error("File must be 50 MB or smaller.");
+  const ext=(file.name.split(".").pop()||"bin").replace(/[^a-z0-9]/gi,"").slice(0,12) || "bin";
+  const path=`${currentUser.id}/${folder}/${crypto.randomUUID()}.${ext}`;
+  const isPrivate = !["profile", "moments"].includes(folder);
+  const bucket = isPrivate ? "nexus-chat-media" : "nexus-public-media";
+  const {error}=await supabase.storage.from(bucket).upload(path,file,{upsert:false,contentType:file.type||"application/octet-stream"});
+  if(error) throw error;
+  if (isPrivate) return `private:${path}`;
+  const {data}=supabase.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
+async function sendAttachment(file, forcedType=null) {
+  if(!selected || !file) return alert("Choose a person first.");
+  try { const url=await uploadFile(file); const type=forcedType || (file.type.startsWith("image/")?"image":file.type.startsWith("video/")?"video":file.type.startsWith("audio/")?"audio":"file");
+    const cid=conversationId(currentUser.id,selected.id);
+    const {data,error}=await supabase.from("messages").insert({conversation_id:cid,sender_id:currentUser.id,recipient_id:selected.id,text:"",media_type:type,media_url:url}).select().single();
+    if(error) throw error; if(!msgs.some(m=>m.id===data.id)){msgs.push(await hydrateMessage(data));renderMessages();}
+    supabase.functions.invoke("send-push", { body: { message_id: data.id } }).catch(err => console.warn("Push notification was not sent", err));
+  } catch(e){alert("Upload failed: "+friendlyError(e)+". Check the SQL setup and Storage bucket policies.");}
+}
+$("mediaFile").addEventListener("change",async e=>{const f=e.target.files?.[0];if(f)await sendAttachment(f);e.target.value="";});
+$("stickerBtn").addEventListener("click",()=>$("stickerTray").classList.toggle("hide"));
+document.querySelectorAll(".sticker").forEach(b=>b.addEventListener("click",()=>{if(!selected)return alert("Choose a person first.");$("messageInput").value+=b.textContent;$("stickerTray").classList.add("hide");$("messageInput").focus();}));
+$("recordBtn").addEventListener("click",async()=>{
+ if(!selected)return alert("Choose a person first.");
+ if(recorder && recorder.state==="recording"){recorder.stop();$("recordBtn").textContent="🎙 Voice note";return;}
+ try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recordChunks=[];recorder=new MediaRecorder(stream);
+ recorder.ondataavailable=e=>{if(e.data.size)recordChunks.push(e.data)};
+ recorder.onstop=async()=>{const blob=new Blob(recordChunks,{type:recorder.mimeType||"audio/webm"});stream.getTracks().forEach(t=>t.stop());await sendAttachment(new File([blob],`voice-${Date.now()}.webm`,{type:blob.type}),"audio");};
+ recorder.start();$("recordBtn").textContent="⏹ Stop & send";
+ }catch(e){alert("Microphone access was denied or unavailable. Use HTTPS and allow microphone permission.");}
+});
+$("contactsBtn").addEventListener("click",async()=>{
+ if(!currentUser) return alert("Sign in before importing contacts.");
+ if(!('contacts' in navigator) || !('ContactsManager' in window)) return alert("Contact picker is supported only on some mobile browsers (usually Android Chrome). You can still search people by name or email. Contacts are accessed only after you choose them.");
+ try{
+  const picked=await navigator.contacts.select(['name','tel'],{multiple:true});
+  if (!picked.length) return;
+  const rows = picked.map(c => ({ owner_id: currentUser.id, contact_name: (c.name||[]).join(" ").slice(0,160), phone: (c.tel||[])[0] || "" })).filter(c => c.phone);
+  if (!rows.length) return alert("The selected contacts did not include phone numbers.");
+  const {error} = await supabase.from("user_contacts").upsert(rows, {onConflict:"owner_id,phone"});
+  if (error) throw error;
+  alert(`Saved ${rows.length} selected contact(s) privately to your NEXUS account.`);
+ }catch(e){if(e.name!=="AbortError")alert("Could not open contacts. Check browser support and permissions.");}
+});
+$("profileFile").addEventListener("change",async e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/"))return alert("Choose an image.");if(f.size>10*1024*1024)return alert("Profile photo must be 10 MB or smaller.");try{const url=await uploadFile(f,"profile");const {error}=await supabase.auth.updateUser({data:{avatar_url:url}});if(error)throw error;await supabase.from("profiles").update({avatar_url:url}).eq("id",currentUser.id);$("myAvatar").src=url;alert("Profile photo updated.");}catch(err){alert("Could not update photo: "+friendlyError(err));}e.target.value="";});
+$("enableNotifications").addEventListener("click", enablePushNotifications);
+$("messagesTab").addEventListener("click",()=>{$("messagesView").classList.remove("hide");$("videosView").classList.add("hide");$("messagesTab").classList.remove("secondary");$("videosTab").classList.add("secondary");});
+$("videosTab").addEventListener("click",async()=>{$("messagesView").classList.add("hide");$("videosView").classList.remove("hide");$("videosTab").classList.remove("secondary");$("messagesTab").classList.add("secondary");await loadFeed();});
+async function loadFeed(){if(!configured||!currentUser)return;const box=$("videoFeed");box.innerHTML="<p class='small'>Loading moments...</p>";const {data,error}=await supabase.from("moments").select("*,profiles(first_name,last_name,email)").order("created_at",{ascending:false}).limit(60);if(error){box.innerHTML="<p class='small'>Feed is not ready. Run the supplied SQL setup, including the moments table and Storage bucket.</p>";return;}box.innerHTML="";for(const post of data||[]){const card=document.createElement("article");card.className="postcard";const v=document.createElement("video");v.src=post.video_url;v.controls=true;v.playsInline=true;v.preload="metadata";const cap=document.createElement("div");cap.className="caption";const who=post.profiles?[post.profiles.first_name,post.profiles.last_name].filter(Boolean).join(" "):"NEXUS member";cap.textContent=`${who||"NEXUS member"} · ${post.caption||""}`;card.append(v,cap);box.append(card);}}
+$("postForm").addEventListener("submit",async e=>{e.preventDefault();const f=$("postVideo").files?.[0];if(!f||!currentUser)return;if(!f.type.startsWith("video/"))return alert("Select a video file.");if(f.size>50*1024*1024)return alert("Video must be 50 MB or smaller.");$("postStatus").textContent="Uploading...";try{const url=await uploadFile(f,"moments");const {error}=await supabase.from("moments").insert({user_id:currentUser.id,video_url:url,caption:$("postCaption").value.trim()});if(error)throw error;$("postForm").reset();$("postStatus").textContent="Published!";await loadFeed();}catch(err){$("postStatus").textContent="";alert("Could not publish: "+friendlyError(err));}});
+// WebRTC calls use private Supabase Realtime Broadcast channels. Configure a real TURN server above for reliable mobile-network calls.
+function callTopic(profile) { return "call:" + [currentUser.id, profile.id].sort().join(":"); }
+function sendCallSignal(payload) {
+  if (!activeCallChannel) return Promise.reject(new Error("Call signaling channel is not connected."));
+  return activeCallChannel.send({ type: "broadcast", event: "signal", payload: { ...payload, from: currentUser.id, to: selected?.id } });
+}
+function makePeer(profile) {
+  if (peer) { try { peer.close(); } catch {} }
+  peer = new RTCPeerConnection({ iceServers: ICE_CONFIG });
+  if (localStream) localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+  peer.ontrack = e => { $("remoteVideo").srcObject = e.streams[0]; };
+  peer.onicecandidate = e => { if (e.candidate && activeCallChannel) sendCallSignal({ candidate: e.candidate }).catch(console.warn); };
+  peer.onconnectionstatechange = () => {
+    if (peer && ["connected", "connecting", "disconnected", "failed"].includes(peer.connectionState)) {
+      $("callStatus").textContent = ({connected:"Connected",connecting:"Connecting…",disconnected:"Connection interrupted",failed:"Connection failed — check TURN settings"})[peer.connectionState] || peer.connectionState;
+    }
+  };
+}
+async function applyQueuedCandidates() {
+  if (!peer?.remoteDescription) return;
+  const pending = queuedCandidates.splice(0);
+  for (const candidate of pending) { try { await peer.addIceCandidate(candidate); } catch (e) { console.warn("ICE candidate rejected", e); } }
+}
+async function ensureCallChannel(profile) {
+  if (!currentUser || !profile) return;
+  if (activeCallChannel && callChannelUserId === profile.id) return callChannelReady;
+  if (activeCallChannel) { await supabase.removeChannel(activeCallChannel); activeCallChannel = null; callChannelReady = null; }
+  callChannelUserId = profile.id;
+  const channel = supabase.channel(callTopic(profile), { config: { private: true, broadcast: { ack: true } } });
+  channel.on("broadcast", { event: "signal" }, async ({ payload }) => {
+    try {
+      if (!payload || payload.to !== currentUser.id || payload.from !== profile.id) return;
+      if (payload.offer) {
+        if (peer || localStream) { await channel.send({type:"broadcast",event:"signal",payload:{from:currentUser.id,to:profile.id,busy:true}}); return; }
+        selected = profile;
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        $("localVideo").srcObject = localStream;
+        $("callBox").classList.remove("hide");
+        $("callTitle").textContent = "Call with " + fullName(profile);
+        $("callStatus").textContent = "Incoming video call";
+        incomingOffer = payload.offer; queuedCandidates = [];
+        makePeer(profile);
+        $("acceptCall").classList.remove("hide");
+      }
+      if (payload.answer && peer?.signalingState === "have-local-offer") {
+        await peer.setRemoteDescription(payload.answer); await applyQueuedCandidates();
+        $("callStatus").textContent = "Connecting…";
+      }
+      if (payload.candidate) {
+        if (peer?.remoteDescription) { try { await peer.addIceCandidate(payload.candidate); } catch (e) { console.warn(e); } }
+        else queuedCandidates.push(payload.candidate);
+      }
+      if (payload.busy) $("callStatus").textContent = "The person is already in another call.";
+      if (payload.hangup) await endCall(false, false);
+    } catch (e) { console.error("Call signaling error", e); $("callStatus").textContent = "Call setup failed. Check permissions and TURN settings."; }
+  });
+  activeCallChannel = channel;
+  callChannelReady = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error("Timed out connecting to private call channel. Run the SQL setup and check Realtime policies.")), 12000);
+    channel.subscribe(state => {
+      if (state === "SUBSCRIBED") { clearTimeout(timeout); resolve(state); }
+      if (state === "CHANNEL_ERROR" || state === "TIMED_OUT" || state === "CLOSED") { clearTimeout(timeout); reject(new Error("Private call channel failed: " + state)); }
+    });
+  });
+  return callChannelReady;
+}
+async function startCall() {
+  if (!selected) return alert("Choose a person first.");
+  if (peer || localStream) return alert("End the current call before starting another.");
+  try {
+    await ensureCallChannel(selected);
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+    $("localVideo").srcObject = localStream; $("callBox").classList.remove("hide");
+    $("callTitle").textContent = "Calling " + fullName(selected); $("callStatus").textContent = "Calling…";
+    queuedCandidates = []; makePeer(selected);
+    const offer = await peer.createOffer(); await peer.setLocalDescription(offer);
+    await sendCallSignal({ offer });
+  } catch (e) { console.error(e); await endCall(false, false); alert("Call could not start. Use HTTPS, allow camera/microphone, run the SQL setup, and configure valid TURN credentials for mobile networks."); }
+}
+$("callBtn").addEventListener("click", startCall);
+$("acceptCall").addEventListener("click", async () => {
+  if (!incomingOffer || !peer) return;
+  try {
+    await peer.setRemoteDescription(incomingOffer); await applyQueuedCandidates();
+    const answer = await peer.createAnswer(); await peer.setLocalDescription(answer);
+    await sendCallSignal({ answer }); $("acceptCall").classList.add("hide"); $("callStatus").textContent = "Connecting…"; incomingOffer = null;
+  } catch (e) { console.error(e); alert("Could not accept call. Check camera/microphone permission and TURN settings."); }
+});
+async function endCall(sendSignal=true, keepChannel=true) {
+  if (sendSignal && activeCallChannel && selected) { try { await sendCallSignal({ hangup: true }); } catch {} }
+  if (peer) { try { peer.close(); } catch {} peer = null; }
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  $("localVideo").srcObject = null; $("remoteVideo").srcObject = null;
+  $("callBox").classList.add("hide"); $("acceptCall").classList.add("hide"); incomingOffer = null; queuedCandidates = [];
+  if (!keepChannel && activeCallChannel) { await supabase.removeChannel(activeCallChannel); activeCallChannel = null; callChannelUserId = null; callChannelReady = null; }
+}
+$("hangupCall").addEventListener("click", () => endCall(true, true));
+
+$("logoutBtn").addEventListener("click", () => supabase.auth.signOut());
+
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("./sw.js").catch(err => console.warn("PWA service worker registration failed", err));
+}
+
+if (configured) {
+  supabase.auth.onAuthStateChange((event, session) => {
+    // Defer work: don't call Supabase APIs directly inside this callback.
+    setTimeout(() => {
+      if (session?.user) { if (currentUser?.id !== session.user.id) startApp(session.user).catch(err => { console.error(err); showError(friendlyError(err)); }); }
+      else if (currentUser) stopApp();
+    }, 0);
+  });
+}
+</script>
+</body>
+</html>
